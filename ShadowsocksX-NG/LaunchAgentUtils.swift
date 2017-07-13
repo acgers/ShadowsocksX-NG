@@ -44,9 +44,9 @@ func generateSSLocalLauchAgentPlist() -> Bool {
     let oldSha1Sum = getFileSHA1Sum(plistFilepath)
     
     let defaults = UserDefaults.standard
-    let enableUdpRelay = defaults.bool(forKey: "LocalSocks5.EnableUDPRelay")
-    let enableVerboseMode = defaults.bool(forKey: "LocalSocks5.EnableVerboseMode")
-    let enabelWhiteListMode = defaults.string(forKey: "ShadowsocksRunningMode")
+    let enableUdpRelay = defaults.bool(forKey: LOCAL_SOCKS5_ENABLE_UDPRELAY)
+    let enableVerboseMode = defaults.bool(forKey: LOCAL_SOCKS5_ENABLE_VERBOSE_MODE)
+    let enabelWhiteListMode = defaults.string(forKey: SHADOWSOCKS_RUNNING_MODE)
     
     var arguments = [sslocalPath, "-c", "ss-local-config.json"]
     if enableUdpRelay {
@@ -56,7 +56,7 @@ func generateSSLocalLauchAgentPlist() -> Bool {
         arguments.append("-v")
     }
     if enabelWhiteListMode == "whiteList" {
-        ACLFileName = defaults.string(forKey: "ACLFileName")!
+        ACLFileName = defaults.string(forKey: ACL_FILE_NAME)!
         let ACLPath = NSHomeDirectory() + "/.ShadowsocksX-NG/" + ACLFileName
         arguments.append("--acl")
         arguments.append(ACLPath)
@@ -172,7 +172,7 @@ func SyncSSLocal() {
         if mgr.getActiveProfile() != nil {
             changed = changed || writeSSLocalConfFile((mgr.getActiveProfile()?.toJsonConfig())!)
         }
-        let on = UserDefaults.standard.bool(forKey: "ShadowsocksOn")
+        let on = UserDefaults.standard.bool(forKey: SHADOWSOCKS_ON)
         if on {
             StartSSLocal()
             ReloadConfSSLocal()
@@ -281,8 +281,8 @@ func writePrivoxyConfFile() -> Bool {
         let bundle = Bundle.main
         let examplePath = bundle.path(forResource: "privoxy.config.example", ofType: nil)
         var example = try String(contentsOfFile: examplePath!, encoding: .utf8)
-        example = example.replacingOccurrences(of: "{http}", with: defaults.string(forKey: "LocalHTTP.ListenAddress")! + ":" + String(defaults.integer(forKey: "LocalHTTP.ListenPort")))
-        example = example.replacingOccurrences(of: "{socks5}", with: defaults.string(forKey: "LocalSocks5.ListenAddress")! + ":" + String(defaults.integer(forKey: "LocalSocks5.ListenPort")))
+        example = example.replacingOccurrences(of: "{http}", with: defaults.string(forKey: LOCAL_HTTP_LISTEN_ADDRESS)! + ":" + String(defaults.integer(forKey: LOCAL_HTTP_LISTEN_PORT)))
+        example = example.replacingOccurrences(of: "{socks5}", with: defaults.string(forKey: LOCAL_SOCKS5_LISTEN_ADDRESS)! + ":" + String(defaults.integer(forKey: LOCAL_SOCKS5_LISTEN_PORT)))
         let data = example.data(using: .utf8)
         
         let filepath = NSHomeDirectory() + APP_SUPPORT_DIR + "privoxy.config"
@@ -318,7 +318,7 @@ func SyncPrivoxy() {
     if mgr.activeProfileId != nil {
         changed = changed || writePrivoxyConfFile()
         
-        let on = UserDefaults.standard.bool(forKey: "LocalHTTPOn")
+        let on = UserDefaults.standard.bool(forKey: LOCAL_HTTP_ON)
         if on {
 //            StartPrivoxy()
             ReloadConfPrivoxy()

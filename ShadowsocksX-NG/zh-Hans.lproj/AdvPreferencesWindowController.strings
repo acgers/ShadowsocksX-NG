@@ -37,3 +37,9 @@
 
 /* Class = "NSTextFieldCell"; title = "White IP List URL:"; ObjectID = "qhu-d1-qgq"; */
 "qhu-d1-qgq.title" = "ACL GFW List 列表 URL:";
+
+/* Class = "NSButtonCell"; title = "关闭"; ObjectID = "Kmy-D4-0gq"; */
+"Kmy-D4-0gq.title" = "关闭";
+
+/* Class = "NSButtonCell"; title = "恢复默认"; ObjectID = "9mk-KZ-cz5"; */
+"9mk-KZ-cz5.title" = "恢复默认";

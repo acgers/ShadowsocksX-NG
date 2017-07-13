@@ -98,9 +98,9 @@ class ServerProfile: NSObject {
                                          "method": method as AnyObject,]
         
         let defaults = UserDefaults.standard
-        conf["local_port"] = NSNumber(value: UInt16(defaults.integer(forKey: "LocalSocks5.ListenPort")) as UInt16)
-        conf["local_address"] = defaults.string(forKey: "LocalSocks5.ListenAddress") as AnyObject?
-        conf["timeout"] = NSNumber(value: UInt32(defaults.integer(forKey: "LocalSocks5.Timeout")) as UInt32)
+        conf["local_port"] = NSNumber(value: UInt16(defaults.integer(forKey: LOCAL_SOCKS5_LISTEN_PORT)) as UInt16)
+        conf["local_address"] = defaults.string(forKey: LOCAL_SOCKS5_LISTEN_ADDRESS) as AnyObject?
+        conf["timeout"] = NSNumber(value: UInt32(defaults.integer(forKey: LOCAL_SOCKS5_TIMEOUT)) as UInt32)
         
         if(!ssrObfs.isEmpty){
             conf["protocol"] = ssrProtocol as AnyObject?

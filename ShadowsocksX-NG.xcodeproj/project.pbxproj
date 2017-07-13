@@ -20,6 +20,7 @@
 		08F162C01EBEE6F800C52869 /* backchn.acl in Resources */ = {isa = PBXBuildFile; fileRef = 08F162BF1EBEE6F800C52869 /* backchn.acl */; };
 		08F162C21EBEEC0F00C52869 /* gfwlist.acl in Resources */ = {isa = PBXBuildFile; fileRef = 08F162C11EBEEC0F00C52869 /* gfwlist.acl */; };
 		258E511BA910B0521B24DAB8 /* Pods_ShadowsocksX_NG.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 283ED1A8E9B711AC65670031 /* Pods_ShadowsocksX_NG.framework */; };
+		6237A5C327F3095EB3CF20E3 /* Configurations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6237A8FF2102673A136ED3F0 /* Configurations.swift */; };
 		9B07EFA71D048BBB0052D9DF /* ss-local in Resources */ = {isa = PBXBuildFile; fileRef = 9B07EFA61D048BBB0052D9DF /* ss-local */; };
 		9B07EFAC1D048E880052D9DF /* menu_icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9B07EFA81D048E880052D9DF /* menu_icon@2x.png */; };
 		9B07EFAD1D048E880052D9DF /* menu_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 9B07EFA91D048E880052D9DF /* menu_icon.png */; };
@@ -128,6 +129,7 @@
 		50D54926AA21B0D4D8DD9C4F /* Pods-ShadowsocksX-NGUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShadowsocksX-NGUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-ShadowsocksX-NGUITests/Pods-ShadowsocksX-NGUITests.release.xcconfig"; sourceTree = "<group>"; };
 		58907E7F50405104B42CB189 /* Pods-ShadowsocksX-NGUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShadowsocksX-NGUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ShadowsocksX-NGUITests/Pods-ShadowsocksX-NGUITests.debug.xcconfig"; sourceTree = "<group>"; };
 		5B6203C1228FCD3D365814AC /* Pods-ShadowsocksX-NGTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShadowsocksX-NGTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-ShadowsocksX-NGTests/Pods-ShadowsocksX-NGTests.debug.xcconfig"; sourceTree = "<group>"; };
+		6237A8FF2102673A136ED3F0 /* Configurations.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Configurations.swift; sourceTree = "<group>"; };
 		9B07EFA61D048BBB0052D9DF /* ss-local */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; path = "ss-local"; sourceTree = "<group>"; };
 		9B07EFA81D048E880052D9DF /* menu_icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "menu_icon@2x.png"; sourceTree = "<group>"; };
 		9B07EFA91D048E880052D9DF /* menu_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = menu_icon.png; sourceTree = "<group>"; };
@@ -337,6 +339,7 @@
 				9B3FFF501D09DAEA0019A709 /* proxy_conf_helper_version.h */,
 				9BA04B211D23D5A5005AAD7F /* ProxyConfTool.h */,
 				9BA04B221D23D5A5005AAD7F /* ProxyConfTool.m */,
+				6237A8FF2102673A136ED3F0 /* Configurations.swift */,
 			);
 			path = "ShadowsocksX-NG";
 			sourceTree = "<group>";
@@ -708,6 +711,7 @@
 				9BEEF0781D04FE8A00FC52B3 /* LaunchAgentUtils.swift in Sources */,
 				C6E28E921DA79380004F8330 /* HTTPPreferencesWindowController.swift in Sources */,
 				C8E42A6C1D4F270A0074C7EA /* UserRulesController.swift in Sources */,
+				6237A5C327F3095EB3CF20E3 /* Configurations.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

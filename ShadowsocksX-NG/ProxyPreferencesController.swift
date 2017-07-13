@@ -24,9 +24,9 @@ class ProxyPreferencesController: NSWindowController, NSTableViewDataSource, NST
 
         // Implement this method to handle any initialization after your window controller's window has been loaded from its nib file.
         let defaults = UserDefaults.standard
-        self.setValue(defaults.bool(forKey: "AutoConfigureNetworkServices"), forKey: "autoConfigureNetworkServices")
+        self.setValue(defaults.bool(forKey: AUTO_CONFIGURE_NETWORK_SERVICES), forKey: "autoConfigureNetworkServices")
         
-        if let services = defaults.array(forKey: "Proxy4NetworkServices") {
+        if let services = defaults.array(forKey: PROXY4_NETWORK_SERVICES) {
             selectedNetworkServices = NSMutableSet(array: services)
         } else {
             selectedNetworkServices = NSMutableSet()
@@ -40,8 +40,8 @@ class ProxyPreferencesController: NSWindowController, NSTableViewDataSource, NST
         ProxyConfHelper.disableProxy("hi")
         
         let defaults = UserDefaults.standard
-        defaults.setValue(selectedNetworkServices.allObjects, forKeyPath: "Proxy4NetworkServices")
-        defaults.set(autoConfigureNetworkServices, forKey: "AutoConfigureNetworkServices")
+        defaults.setValue(selectedNetworkServices.allObjects, forKeyPath: PROXY4_NETWORK_SERVICES)
+        defaults.set(autoConfigureNetworkServices, forKey: AUTO_CONFIGURE_NETWORK_SERVICES)
         
         defaults.synchronize()
         

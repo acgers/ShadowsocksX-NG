@@ -24,7 +24,7 @@ let ACLGFWListFilePath = PACRulesDirPath + "gfwlist.acl"
 func SyncPac() {
     var needGenerate = false
     
-    let nowSocks5Port = UserDefaults.standard.integer(forKey: "LocalSocks5.ListenPort")
+    let nowSocks5Port = UserDefaults.standard.integer(forKey: LOCAL_SOCKS5_LISTEN_PORT)
     let oldSocks5Port = UserDefaults.standard.integer(forKey: "LocalSocks5.ListenPort.Old")
     if nowSocks5Port != oldSocks5Port {
         needGenerate = true
@@ -91,7 +91,7 @@ func GeneratePACFile() -> Bool {
         
     }
     
-    let socks5Port = UserDefaults.standard.integer(forKey: "LocalSocks5.ListenPort")
+    let socks5Port = UserDefaults.standard.integer(forKey: LOCAL_SOCKS5_LISTEN_PORT)
     
     do {
         let gfwlist = try String(contentsOfFile: GFWListFilePath, encoding: String.Encoding.utf8)
@@ -165,7 +165,7 @@ func UpdatePACFromGFWList() {
         }
     }
     
-    let url = UserDefaults.standard.string(forKey: "GFWListURL")
+    let url = UserDefaults.standard.string(forKey: GFW_LIST_URL)
     Alamofire.request(url!)
         .responseString {
             response in
@@ -269,7 +269,7 @@ func UpdateACL(){
             }
     }
     
-    let IPURL = UserDefaults.standard.string(forKey: "ACLAutoListURL")
+    let IPURL = UserDefaults.standard.string(forKey: ACL_AUTO_LIST_URL)
     Alamofire.request(IPURL!)
         .responseString {
             response in

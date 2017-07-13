@@ -19,19 +19,19 @@ class ServerProfileManager: NSObject {
         profiles = [ServerProfile]()
         
         let defaults = UserDefaults.standard
-        if let _profiles = defaults.array(forKey: "ServerProfiles") {
+        if let _profiles = defaults.array(forKey: SERVER_PROFILES) {
             for _profile in _profiles {
                 let profile = ServerProfile.fromDictionary(_profile as! [String : AnyObject])
                 profiles.append(profile)
             }
         }
-        activeProfileId = defaults.string(forKey: "ActiveServerProfileId")
+        activeProfileId = defaults.string(forKey: ACTIVE_SERVER_PROFILE_ID)
     }
     
     func setActiveProfiledId(_ id: String) {
         activeProfileId = id
         let defaults = UserDefaults.standard
-        defaults.set(id, forKey: "ActiveServerProfileId")
+        defaults.set(id, forKey: ACTIVE_SERVER_PROFILE_ID)
     }
     
     func save() {
@@ -43,17 +43,17 @@ class ServerProfileManager: NSObject {
                 _profiles.append(_profile as AnyObject)
             }
         }
-        defaults.set(_profiles, forKey: "ServerProfiles")
+        defaults.set(_profiles, forKey: SERVER_PROFILES)
         
         if getActiveProfile() == nil {
             activeProfileId = nil
         }
         
         if activeProfileId != nil {
-            defaults.set(activeProfileId, forKey: "ActiveServerProfileId")
+            defaults.set(activeProfileId, forKey: ACTIVE_SERVER_PROFILE_ID)
             let _ = writeSSLocalConfFile((getActiveProfile()?.toJsonConfig())!)
         } else {
-            defaults.removeObject(forKey: "ActiveServerProfileId")
+            defaults.removeObject(forKey: ACTIVE_SERVER_PROFILE_ID)
             removeSSLocalConfFile()
         }
     }
