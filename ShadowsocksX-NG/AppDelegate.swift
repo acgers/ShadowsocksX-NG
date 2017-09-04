@@ -76,33 +76,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
         defaults.register(defaults: UserDefaults.defaultSetting())
         Configuration.migrate()
 
-//        >>>>>>>
-//        defaults.register(defaults: [
-//            "ShadowsocksOn": true,
-//            "ShadowsocksRunningMode": "auto",
-//            "LocalSocks5.ListenPort": NSNumber(value: 1086 as UInt16),
-//            "LocalSocks5.ListenAddress": "127.0.0.1",
-//            "PacServer.ListenAddress": "127.0.0.1",
-//            "PacServer.ListenPort":NSNumber(value: 8090 as UInt16),
-//            "LocalSocks5.Timeout": NSNumber(value: 60 as UInt),
-//            "LocalSocks5.EnableUDPRelay": NSNumber(value: false as Bool),
-//            "LocalSocks5.EnableVerboseMode": NSNumber(value: false as Bool),
-//            "GFWListURL": "https://raw.githubusercontent.com/gfwlist/gfwlist/master/gfwlist.txt",
-//            "ACLWhiteListURL": "https://raw.githubusercontent.com/shadowsocksr/shadowsocksr-libev/master/acl/chn.acl",
-//            "ACLAutoListURL": "https://raw.githubusercontent.com/shadowsocksr/shadowsocksr-libev/master/acl/gfwlist.acl",
-//            "ACLProxyBackCHNURL":"https://raw.githubusercontent.com/shadowsocksr/ShadowsocksX-NG/develop/ShadowsocksX-NG/backchn.acl",
-//            "AutoConfigureNetworkServices": NSNumber(value: true as Bool),
-//            "LocalHTTP.ListenAddress": "127.0.0.1",
-//            "LocalHTTP.ListenPort": NSNumber(value: 1087 as UInt16),
-//            "LocalHTTPOn": true,
-//            "LocalHTTP.FollowGlobal": true,
-//            "AutoCheckUpdate": false,
-//            "ACLFileName": "chn.acl",
-//            "Subscribes": [],
-//            "AutoUpdateSubscribe":false,
-//        ])
-//>>>>>>> e94ba06959629938605f3c11a0d771d3b2f2bfb0
-
         setUpMenu(defaults.bool(forKey: ENABLE_SHOW_SPEED))
         
         statusItem = NSStatusBar.system().statusItem(withLength: 20)
@@ -515,7 +488,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
     }
     
     @IBAction func feedback(_ sender: NSMenuItem) {
-        NSWorkspace.shared().open(URL(string: "https://github.com/shadowsocksr/ShadowsocksX-NG/issues")!)
+        NSWorkspace.shared().open(URL(string: "https://github.com/acgers/ShadowsocksX-NG-R/issues")!)
     }
     
     @IBAction func checkForUpdate(_ sender: NSMenuItem) {
@@ -764,7 +737,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
                     let alertResult = versionChecker.showAlertView(Title: newVersion["Title"] as! String, SubTitle: newVersion["SubTitle"] as! String, ConfirmBtn: newVersion["ConfirmBtn"] as! String, CancelBtn: newVersion["CancelBtn"] as! String)
                     print(alertResult)
                     if (newVersion["newVersion"] as! Bool && alertResult == 1000){
-                        NSWorkspace.shared().open(URL(string: "https://github.com/shadowsocksr/ShadowsocksX-NG/releases")!)
+                        NSWorkspace.shared().open(URL(string: "https://github.com/acgers/ShadowsocksX-NG-R/releases")!)
                     }
                 }
             }

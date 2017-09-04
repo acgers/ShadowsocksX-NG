@@ -1,6 +1,9 @@
 //
-// Created by wangxufire on 2017/7/12.
-// Copyright (c) 2017 qiuyuzhou. All rights reserved.
+//  Configurations.swift
+//  ShadowsocksX-NG
+//
+//  Created by wangxufire on 2017/7/12.
+//  Copyright (c) 2017 qiuyuzhou. All rights reserved.
 //
 
 import Cocoa
@@ -30,6 +33,8 @@ let CONNECT_AT_LAUNCH = "ConnectAtLaunch"
 let PROXY4_NETWORK_SERVICES = "Proxy4NetworkServices"
 let SERVER_PROFILES = "ServerProfiles"
 let ACTIVE_SERVER_PROFILE_ID = "ActiveServerProfileId"
+let SUBSCRIBES = "Subscribes"
+let AUTO_UPDATE_SUBSCRIBE = "AutoUpdateSubscribe"
 
 let MIGRATE_CONFIGURATION = "MigrateConfiguration"
 
@@ -59,6 +64,7 @@ let MIGRATE_CONFIGURATION = "MigrateConfiguration"
     class func C_PROXY4_NETWORK_SERVICES() -> String { return PROXY4_NETWORK_SERVICES }
     class func C_SERVER_PROFILES() -> String { return SERVER_PROFILES }
     class func C_ACTIVE_SERVER_PROFILE_ID() -> String { return ACTIVE_SERVER_PROFILE_ID }
+    class func C_AUTO_UPDATE_SUBSCRIBE() -> String { return AUTO_UPDATE_SUBSCRIBE }
 
     class func  migrate() -> Void {
         let defaults = UserDefaults.standard
@@ -116,16 +122,18 @@ extension UserDefaults {
             LOCAL_SOCKS5_ENABLE_UDPRELAY: NSNumber(value: false as Bool),
             LOCAL_SOCKS5_ENABLE_VERBOSE_MODE: NSNumber(value: false as Bool),
             GFW_LIST_URL: "https://raw.githubusercontent.com/gfwlist/gfwlist/master/gfwlist.txt",
-            ACL_WHITE_LIST_URL: "https://raw.githubusercontent.com/shadowsocksr/shadowsocksr-libev/master/acl/chn.acl",
-            ACL_AUTO_LIST_URL: "https://raw.githubusercontent.com/shadowsocksr/shadowsocksr-libev/master/acl/gfwlist.acl",
-            ACL_PROXY_BACK_CHN_URL:"https://raw.githubusercontent.com/shadowsocksr/ShadowsocksX-NG/develop/ShadowsocksX-NG/backchn.acl",
+            ACL_WHITE_LIST_URL: "https://raw.githubusercontent.com/shadowsocks/shadowsocks-libev/master/acl/chn.acl",
+            ACL_AUTO_LIST_URL: "https://raw.githubusercontent.com/shadowsocks/shadowsocks-libev/master/acl/gfwlist.acl",
+            ACL_PROXY_BACK_CHN_URL:"https://raw.githubusercontent.com/acgers/ShadowsocksX-NG-R/master/ShadowsocksX-NG/backchn.acl",
             AUTO_CONFIGURE_NETWORK_SERVICES: NSNumber(value: true as Bool),
             LOCAL_HTTP_LISTEN_ADDRESS: "127.0.0.1",
             LOCAL_HTTP_LISTEN_PORT: NSNumber(value: 1087 as UInt16),
             LOCAL_HTTP_ON: true,
             LOCAL_HTTP_FOLLOW_GLOBAL: true,
             AUTO_CHECK_UPDATE: false,
-            ACL_FILE_NAME: "chn.acl"
+            ACL_FILE_NAME: "chn.acl",
+            AUTO_UPDATE_SUBSCRIBE: false,
+            SUBSCRIBES: []
         ]
     }
 }
