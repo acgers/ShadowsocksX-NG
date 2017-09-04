@@ -4,7 +4,7 @@ Current version is 1.4.0-R8
 
 Continuesly release under 1.4.0-R8-buildVersion
 
-[![Build Status](https://travis-ci.org/shadowsocksr/ShadowsocksX-NG.svg?branches=develop)](https://travis-ci.org/shadowsocksr/ShadowsocksX-NG)
+[![Build Status](https://travis-ci.org/acgers/ShadowsocksX-NG-R.svg?branch=master)](https://travis-ci.org/acgers/ShadowsocksX-NG-R)
 
 Next Generation of [ShadowsocksX](https://github.com/shadowsocks/shadowsocks-iOS) with SSR support.
 
@@ -86,7 +86,7 @@ ref: [GitFlow](http://nvie.com/posts/a-successful-git-branching-model/)
 - [x] Embed the http proxy server [privoxy](http://www.privoxy.org/), [get it](https://homebrew.bintray.com/bottles/privoxy-3.0.26.sierra.bottle.tar.gz).
 
 
-- [x] ACL mode support [Shadowsocks ACL](https://github.com/shadowsocksr/shadowsocksr-libev/tree/master/acl)
+- [x] ACL mode support [Shadowsocks ACL](https://github.com/shadowsocks/shadowsocks-libev/tree/master/acl)
 
 ## Know Issue
 Solved [Issue 1.]() Auto PAC & White list is not working on macOS 10.12 Serria because system proxy not allow [file:///](file:///) protocol.
