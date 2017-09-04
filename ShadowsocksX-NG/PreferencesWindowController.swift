@@ -81,6 +81,7 @@ class PreferencesWindowController: NSWindowController
             "auth_aes128_sha1",
             "auth_aes128_md5",
             "auth_chain_a",
+            "auth_chain_b",
             ])
         ObfsTextField.addItems(withObjectValues: [
             "plain",
@@ -133,6 +134,10 @@ class PreferencesWindowController: NSWindowController
         self.profilesTableView.scrollRowToVisible(index-1)
         self.profilesTableView.selectRowIndexes(IndexSet(integer: index-1), byExtendingSelection: false)
         updateProfileBoxVisible()
+        if profileMgr.profiles.count == 0 {
+            defaults.set(true, forKey: "ShadowsocksOn")
+            (NSApplication.shared().delegate as! AppDelegate).toggleRunning((NSApplication.shared().delegate as! AppDelegate).toggleRunningMenuItem)
+        }
     }
     
     @IBAction func ok(_ sender: NSButton) {
@@ -260,7 +265,7 @@ class PreferencesWindowController: NSWindowController
     
     func getDataAtRow(_ index:Int) -> (String, Bool) {
         let profile = profileMgr.profiles[index]
-        let isActive = (profileMgr.activeProfileId == profile.uuid)
+        let isActive = (profileMgr.getActiveProfileId() == profile.uuid)
         if !profile.remark.isEmpty {
             return (profile.remark, isActive)
         } else {

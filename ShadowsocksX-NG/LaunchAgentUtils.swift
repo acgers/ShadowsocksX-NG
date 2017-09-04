@@ -8,7 +8,7 @@
 
 import Foundation
 
-let SS_LOCAL_VERSION = "2.5.6.9.static"
+let SS_LOCAL_VERSION = "2.5.6.11.static"
 let PRIVOXY_VERSION = "3.0.26.static"
 let APP_SUPPORT_DIR = "/Library/Application Support/ShadowsocksX-NG/"
 let LAUNCH_AGENT_DIR = "/Library/LaunchAgents/"
@@ -168,7 +168,7 @@ func SyncSSLocal() {
     var changed: Bool = false
     changed = changed || generateSSLocalLauchAgentPlist()
     let mgr = ServerProfileManager.instance
-    if mgr.activeProfileId != nil {
+    if mgr.getActiveProfileId() != "" {
         if mgr.getActiveProfile() != nil {
             changed = changed || writeSSLocalConfFile((mgr.getActiveProfile()?.toJsonConfig())!)
         }
@@ -315,7 +315,7 @@ func SyncPrivoxy() {
     var changed: Bool = false
     changed = changed || generatePrivoxyLauchAgentPlist()
     let mgr = ServerProfileManager.instance
-    if mgr.activeProfileId != nil {
+    if mgr.getActiveProfileId() != "" {
         changed = changed || writePrivoxyConfFile()
         
         let on = UserDefaults.standard.bool(forKey: LOCAL_HTTP_ON)

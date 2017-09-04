@@ -18,6 +18,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
     var proxyPreferencesWinCtrl: ProxyPreferencesController!
     var editUserRulesWinCtrl: UserRulesController!
     var httpPreferencesWinCtrl : HTTPPreferencesWindowController!
+    var subscribePreferenceWinCtrl: SubscribePreferenceWindowController!
     
     var launchAtLoginController: LaunchAtLoginController = LaunchAtLoginController()
     
@@ -50,11 +51,15 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
     @IBOutlet weak var ShowNetworkSpeedItem: NSMenuItem!
     @IBOutlet weak var checkUpdateMenuItem: NSMenuItem!
     @IBOutlet weak var checkUpdateAtLaunchMenuItem: NSMenuItem!
+    @IBOutlet var updateSubscribeAtLaunchMenuItem: NSMenuItem!
+    @IBOutlet var manualUpdateSubscribeMenuItem: NSMenuItem!
+    @IBOutlet var editSubscribeMenuItem: NSMenuItem!
     
     // MARK: Variables
     var statusItemView:StatusItemView!
     var statusItem: NSStatusItem?
     var speedMonitor:NetWorkMonitor?
+    var globalSubscribeFeed: Subscribe!
 
     // MARK: Application function
 
@@ -70,6 +75,33 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
         let defaults = UserDefaults.standard
         defaults.register(defaults: UserDefaults.defaultSetting())
         Configuration.migrate()
+
+//        >>>>>>>
+//        defaults.register(defaults: [
+//            "ShadowsocksOn": true,
+//            "ShadowsocksRunningMode": "auto",
+//            "LocalSocks5.ListenPort": NSNumber(value: 1086 as UInt16),
+//            "LocalSocks5.ListenAddress": "127.0.0.1",
+//            "PacServer.ListenAddress": "127.0.0.1",
+//            "PacServer.ListenPort":NSNumber(value: 8090 as UInt16),
+//            "LocalSocks5.Timeout": NSNumber(value: 60 as UInt),
+//            "LocalSocks5.EnableUDPRelay": NSNumber(value: false as Bool),
+//            "LocalSocks5.EnableVerboseMode": NSNumber(value: false as Bool),
+//            "GFWListURL": "https://raw.githubusercontent.com/gfwlist/gfwlist/master/gfwlist.txt",
+//            "ACLWhiteListURL": "https://raw.githubusercontent.com/shadowsocksr/shadowsocksr-libev/master/acl/chn.acl",
+//            "ACLAutoListURL": "https://raw.githubusercontent.com/shadowsocksr/shadowsocksr-libev/master/acl/gfwlist.acl",
+//            "ACLProxyBackCHNURL":"https://raw.githubusercontent.com/shadowsocksr/ShadowsocksX-NG/develop/ShadowsocksX-NG/backchn.acl",
+//            "AutoConfigureNetworkServices": NSNumber(value: true as Bool),
+//            "LocalHTTP.ListenAddress": "127.0.0.1",
+//            "LocalHTTP.ListenPort": NSNumber(value: 1087 as UInt16),
+//            "LocalHTTPOn": true,
+//            "LocalHTTP.FollowGlobal": true,
+//            "AutoCheckUpdate": false,
+//            "ACLFileName": "chn.acl",
+//            "Subscribes": [],
+//            "AutoUpdateSubscribe":false,
+//        ])
+//>>>>>>> e94ba06959629938605f3c11a0d771d3b2f2bfb0
 
         setUpMenu(defaults.bool(forKey: ENABLE_SHOW_SPEED))
         
@@ -90,7 +122,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
             , using: {
             (note) in
                 let profileMgr = ServerProfileManager.instance
-                if profileMgr.activeProfileId == nil &&
+                if profileMgr.getActiveProfileId() == "" &&
                     profileMgr.profiles.count > 0{
                     if profileMgr.profiles[0].isValid(){
                         profileMgr.setActiveProfiledId(profileMgr.profiles[0].uuid)
@@ -171,14 +203,24 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
         
         ProxyConfHelper.install()
         applyConfig()
-        SyncSSLocal()
+//        SyncSSLocal()
 
-        if defaults.bool(forKey: CONNECT_AT_LAUNCH) {
+        if defaults.bool(forKey: CONNECT_AT_LAUNCH) && ServerProfileManager.instance.getActiveProfileId() != "" {
+            defaults.set(false, forKey: "ShadowsocksOn")
             toggleRunning(toggleRunningMenuItem)
         }
-        // Version Check!
-        if defaults.bool(forKey: AUTO_CHECK_UPDATE){
-            checkForUpdate(mustShowAlert: false)
+
+        DispatchQueue.global().async {
+            // Version Check!
+            if defaults.bool(forKey: AUTO_CHECK_UPDATE) {
+                self.checkForUpdate(mustShowAlert: false)
+            }
+            if defaults.bool(forKey: AUTO_UPDATE_SUBSCRIBE) {
+                SubscribeManager.instance.updateAllServerFromSubscribe()
+            }
+            DispatchQueue.main.async {
+
+            }
         }
     }
 
@@ -193,13 +235,6 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
     }
     
     func applyConfig() {
-        let profileMgr = ServerProfileManager.instance
-        if profileMgr.profiles.count == 0{
-            let notice = NSUserNotification()
-            notice.title = "还没有服务器设定！"
-            notice.subtitle = "去设置里面填一下吧，填完记得选择呦~"
-            NSUserNotificationCenter.default.deliver(notice)
-        }
         let defaults = UserDefaults.standard
         let isOn = defaults.bool(forKey: SHADOWSOCKS_ON)
         let mode = defaults.string(forKey: SHADOWSOCKS_RUNNING_MODE)
@@ -232,12 +267,11 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
     
     @IBAction func toggleRunning(_ sender: NSMenuItem) {
         let defaults = UserDefaults.standard
-        var isOn = defaults.bool(forKey: SHADOWSOCKS_ON)
-        isOn = !isOn
-        defaults.set(isOn, forKey: SHADOWSOCKS_ON)
-        
+
+        defaults.set(!defaults.bool(forKey: SHADOWSOCKS_ON), forKey: SHADOWSOCKS_ON)
+
         updateMainMenu()
-        
+        SyncSSLocal()
         applyConfig()
     }
 
@@ -256,6 +290,18 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
         let ctrl = UserRulesController(windowNibName: "UserRulesController")
         editUserRulesWinCtrl = ctrl
 
+        ctrl.showWindow(self)
+        NSApp.activate(ignoringOtherApps: true)
+        ctrl.window?.makeKeyAndOrderFront(self)
+    }
+    
+    @IBAction func editSubscribeFeed(_ sender: NSMenuItem) {
+        if subscribePreferenceWinCtrl != nil {
+            subscribePreferenceWinCtrl.close()
+        }
+        let ctrl = SubscribePreferenceWindowController(windowNibName: "SubscribePreferenceWindowController")
+        subscribePreferenceWinCtrl = ctrl
+        
         ctrl.showWindow(self)
         NSApp.activate(ignoringOtherApps: true)
         ctrl.window?.makeKeyAndOrderFront(self)
@@ -324,6 +370,19 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
         ServerProfileManager.instance.exportConfigFile()
     }
     
+    @IBAction func updateSubscribe(_ sender: NSMenuItem) {
+        SubscribeManager.instance.updateAllServerFromSubscribe()
+    }
+    
+    @IBAction func updateSubscribeAtLaunch(_ sender: NSMenuItem) {
+        let defaults = UserDefaults.standard
+        defaults.set(!defaults.bool(forKey: AUTO_UPDATE_SUBSCRIBE), forKey: AUTO_UPDATE_SUBSCRIBE)
+        updateSubscribeAtLaunchMenuItem.state = defaults.bool(forKey: AUTO_UPDATE_SUBSCRIBE) ? 1 : 0
+    }
+    
+    
+    // MARK: Proxy submenu function
+
     @IBAction func selectPACMode(_ sender: NSMenuItem) {
         let defaults = UserDefaults.standard
         defaults.setValue("auto", forKey: SHADOWSOCKS_RUNNING_MODE)
@@ -425,7 +484,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
         let index = sender.tag
         let spMgr = ServerProfileManager.instance
         let newProfile = spMgr.profiles[index]
-        if newProfile.uuid != spMgr.activeProfileId {
+        if newProfile.uuid != spMgr.getActiveProfileId() {
             spMgr.setActiveProfiledId(newProfile.uuid)
             updateServersMenu()
             SyncSSLocal()
@@ -487,7 +546,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
         
         let mgr = ServerProfileManager.instance
         for p in mgr.profiles {
-            if mgr.activeProfileId == p.uuid {
+            if mgr.getActiveProfileId() == p.uuid {
                 if !p.remark.isEmpty {
                     serverMenuText = p.remark
                 } else {
@@ -599,6 +658,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
         let showBunch = showBunchJsonExampleFileItem
         let importBuntch = importBunchJsonFileItem
         let exportAllServer = exportAllServerProfileItem
+        let updateSubscribeItem = manualUpdateSubscribeMenuItem
+        let autoUpdateSubscribeItem = updateSubscribeAtLaunchMenuItem
+        let editSubscribeItem = editSubscribeMenuItem
 //        let pingItem = pingserverMenuItem
 
         var i = 0
@@ -613,7 +675,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
                     item.title += "  - failed"
                 }
             }
-            if mgr.activeProfileId == p.uuid {
+            if mgr.getActiveProfileId() == p.uuid {
                 item.state = 1
             }
             if !p.isValid() {
@@ -629,7 +691,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
                     groupSubmenuItem.title = p.ssrGroup
                     serversMenuItem.submenu?.addItem(groupSubmenuItem)
                     serversMenuItem.submenu?.setSubmenu(groupSubmenu, for: groupSubmenuItem)
-                    if mgr.activeProfileId == p.uuid {
+                    if mgr.getActiveProfileId() == p.uuid {
                         item.state = 1
                         groupSubmenuItem.state = 1
                     }
@@ -638,7 +700,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
                     continue
                 }
                 else{
-                    if mgr.activeProfileId == p.uuid {
+                    if mgr.getActiveProfileId() == p.uuid {
                         item.state = 1
                         serversMenuItem.submenu?.item(withTitle: p.ssrGroup)?.state = 1
                     }
@@ -654,6 +716,10 @@ class AppDelegate: NSObject, NSApplicationDelegate, NSUserNotificationCenterDele
         if !mgr.profiles.isEmpty {
             serversMenuItem.submenu?.addItem(NSMenuItem.separator())
         }
+        serversMenuItem.submenu?.addItem(editSubscribeItem!)
+        serversMenuItem.submenu?.addItem(autoUpdateSubscribeItem!)
+        autoUpdateSubscribeItem?.state = UserDefaults.standard.bool(forKey: AUTO_UPDATE_SUBSCRIBE) ? 1 : 0
+        serversMenuItem.submenu?.addItem(updateSubscribeItem!)
         serversMenuItem.submenu?.addItem(showQRItem!)
         serversMenuItem.submenu?.addItem(scanQRItem!)
         serversMenuItem.submenu?.addItem(showBunch!)

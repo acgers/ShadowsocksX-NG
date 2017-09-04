@@ -2,7 +2,7 @@
 //  ServerProfileManager.swift
 //  ShadowsocksX-NG
 //
-//  Created by 邱宇舟 on 16/6/6. Modified by 秦宇航 16/9/12 
+//  Created by 邱宇舟 on 16/6/6. Modified by 秦宇航 17/7/22 
 //  Copyright © 2016年 qiuyuzhou. All rights reserved.
 //
 
@@ -19,19 +19,43 @@ class ServerProfileManager: NSObject {
         profiles = [ServerProfile]()
         
         let defaults = UserDefaults.standard
+        activeProfileId = defaults.string(forKey: ACTIVE_SERVER_PROFILE_ID)
+        var didFindActiveProfileId = false
         if let _profiles = defaults.array(forKey: SERVER_PROFILES) {
             for _profile in _profiles {
                 let profile = ServerProfile.fromDictionary(_profile as! [String : AnyObject])
                 profiles.append(profile)
+                if profile.uuid == activeProfileId {
+                    didFindActiveProfileId = true
+                }
             }
         }
-        activeProfileId = defaults.string(forKey: ACTIVE_SERVER_PROFILE_ID)
+        if profiles.count == 0 {
+            let notice = NSUserNotification()
+            notice.title = "还没有服务器设定！"
+            notice.subtitle = "去设置里面填一下吧，填完记得选择呦~"
+            NSUserNotificationCenter.default.deliver(notice)
+            return
+        }
+        if !didFindActiveProfileId {
+            activeProfileId = profiles[0].uuid
+        }
     }
     
     func setActiveProfiledId(_ id: String) {
         activeProfileId = id
         let defaults = UserDefaults.standard
         defaults.set(id, forKey: ACTIVE_SERVER_PROFILE_ID)
+    }
+    
+    func getActiveProfileId() -> String {
+        for p in profiles {
+            if p.uuid == activeProfileId {
+                return activeProfileId!
+            }
+        }
+        if profiles.count == 0 {return ""}
+        return profiles[0].uuid
     }
     
     func save() {
@@ -46,11 +70,11 @@ class ServerProfileManager: NSObject {
         defaults.set(_profiles, forKey: SERVER_PROFILES)
         
         if getActiveProfile() == nil {
-            activeProfileId = nil
+            activeProfileId = ""
         }
         
-        if activeProfileId != nil {
-            defaults.set(activeProfileId, forKey: ACTIVE_SERVER_PROFILE_ID)
+        if getActiveProfileId() != "" {
+            defaults.set(getActiveProfileId(), forKey: ACTIVE_SERVER_PROFILE_ID)
             let _ = writeSSLocalConfFile((getActiveProfile()?.toJsonConfig())!)
         } else {
             defaults.removeObject(forKey: ACTIVE_SERVER_PROFILE_ID)
@@ -59,18 +83,42 @@ class ServerProfileManager: NSObject {
     }
     
     func getActiveProfile() -> ServerProfile? {
-        if let id = activeProfileId {
-            for p in profiles {
-                if p.uuid == id {
-                    return p
-                }
+        if getActiveProfileId() == "" { return nil }
+        for p in profiles {
+            if p.uuid == getActiveProfileId() {
+                return p
             }
-            return nil
-        } else {
-            return nil
         }
+        return nil
     }
     
+    func isExisted(profile: ServerProfile) -> (Bool, Int){
+        for (index, value) in profiles.enumerated() {
+            let ret = (value.serverHost == profile.serverHost && value.serverPort == profile.serverPort)
+            if ret {
+                return (ret, index)
+            }
+        }
+        return (false, -1)
+    }
+    
+    func isDuplicated(profile: ServerProfile) -> (Bool, Int){
+        for (index, value) in profiles.enumerated() {
+            let ret = value.serverHost == profile.serverHost
+                && value.password == profile.password
+                && value.serverPort == profile.serverPort
+                && value.ssrProtocol == profile.ssrProtocol
+                && value.ssrObfs == profile.ssrObfs
+                && value.ssrObfsParam == profile.ssrObfsParam
+                && value.ssrProtocolParam == profile.ssrProtocolParam
+                && value.remark == profile.remark
+            if ret {
+                return (ret, index)
+            }
+        }
+        return (false, -1)
+    }
+
     func importConfigFile() {
         let openPanel = NSOpenPanel()
         openPanel.title = "Choose Config Json File".localized
