@@ -44,7 +44,6 @@ xcuserdata
 !default.xcworkspace
 *.xcworkspacedata
 
-
 ####
 # Xcode 5
 *.xccheckout
@@ -62,9 +61,7 @@ xcuserdata
 # Other Xcode files
 profile
 *.hmap
-*.ipa
 
 ####
 # Carthage
 Carthage/Build
-
