@@ -23,7 +23,8 @@
 *.gradle text
 *.service text
 *.bat text eol=crlf
-*.js text linguist-language=Swift
+*.js text
+*.js linguist-language=Swift
 
 # Denote all files that are truly binary and should not be modified.
 *.png binary
