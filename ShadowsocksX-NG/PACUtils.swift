@@ -128,8 +128,7 @@ func GeneratePACFile() -> Bool {
                 let rulesJsonStr = String(data: rulesJsonData, encoding: String.Encoding.utf8)
                 
                 // Get raw pac js
-                let jsPath = Bundle.main.url(forResource: "abp", withExtension: "js")
-                let jsData = try? Data(contentsOf: jsPath!)
+                let jsData = try? Data(contentsOf: URL(string: "https://raw.githubusercontent.com/shadowsocks/ShadowsocksX-NG/develop/ShadowsocksX-NG/abp.js")!)
                 var jsStr = String(data: jsData!, encoding: String.Encoding.utf8)
                 
                 // Replace rules placeholder in pac js

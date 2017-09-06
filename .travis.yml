@@ -1,4 +1,5 @@
 language: objective-c
+group: edge
 osx_image: xcode8.3
 xcode_workspace: ShadowsocksX-NG.xcworkspace
 xcode_scheme: ShadowsocksX-NG
